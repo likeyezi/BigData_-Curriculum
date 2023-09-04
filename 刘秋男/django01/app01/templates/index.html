@@ -1,0 +1,187 @@
+﻿{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>线上超市用户分析</title>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/comon0.css' %}">
+    <script>
+        // 从 Django 视图传递的列表以 JSON 格式
+        var total_mount = {{ total_mount | safe }};
+
+
+        var cname_top_6 = {{ cname_top_6 | safe }};
+        var cname_count = {{ cname_count | safe }};
+
+        var cname_count_top10 =
+        {{ cname_count_top10 | safe }}
+        var cname_top10 =
+        {{ cname_top10 | safe }}
+    </script>
+
+</head>
+<body>
+<div class="head">
+    <h1><a href="https://gitee.com/iGaoWei/big-data-view">线上超市用户分析</a></h1>
+
+</div>
+<div class="mainbox">
+    <ul class="clearfix">
+        <li>
+
+            <div class="boxall" style="height:calc(33.3333% - .25rem)">
+                <div class="tit01">每月销量</div>
+
+                <div class="boxnav nav01" id="echart1"></div>
+
+                <div class="boxfoot"></div>
+            </div>
+            <div style="height:calc(33.3333% - .25rem); margin-bottom: .25rem;">
+
+                <div class="boxall" style="height: 100%; width:calc(50% - .08rem); float: left;">
+                    <div class="tit01">热销商品分布</div>
+                    <div class="boxnav nav01" id="echart2"></div>
+                    <div class="boxfoot"></div>
+                </div>
+
+                <div class="boxall" style="height: 100%; width:calc(50% - .08rem); float: right;">
+                    <div class="tit01">总销售数量</div>
+                    <div class="boxnav nav01" style="display: flex; align-items: center;">
+                        <p class="p2"><span class="counter">{{ record_count }}</span></p>
+                    </div>
+                    <div class="boxfoot"></div>
+                </div>
+
+
+            </div>
+
+
+            <div class="boxall" style="height:calc(33.3333% - .25rem)">
+                <div class="tit01">热销产品</div>
+                <div class="boxnav nav01" id="echart3"></div>
+                <div class="boxfoot"></div>
+            </div>
+        </li>
+        <li>
+
+            <div class="boxall" style="height:calc(33.33333% - .25rem)">
+                <div class="tit02">线上超市</div>
+                <div class="boxnav nav02">
+                    <div>
+                        <p class="p1">完成销售额</p>
+                        <p class="p2"><span class="counter">{{ sum_mount }}</span></p>
+                        <p class="p3">
+                            <span><i class="dot dot1"></i>人数：{{ id_count }}</span>
+                            <span><i class="dot dot2"></i>人均消费：{{ avg_mount }}
+
+                </span>
+                        </p></div>
+                </div>
+                <div class="boxfoot"></div>
+            </div>
+            <div class="boxall" style="height:calc(66.666666% - .25rem)">
+                <div class="tit03">用户标签</div>
+                <div class="boxnav nav03">
+
+                    <div class="listhead listhead1">
+                        <span>id</span>
+                        <span>gender</span>
+                        <span>baby</span>
+                        <span>menstruation</span>
+                        <span>loyalty</span>
+                        <span>identity</span>
+                        <span>tendency</span>
+                    </div>
+                    <div class="listnav listnav1 scrollDiv">
+                        <ul>
+                            {% for output_uesr in output_uesrs %}
+                            	<li><span>{{ output_uesr.id }}</span> <span>{{ output_uesr.gender }}</span> <span>{{ output_uesr.baby }}</span>
+                                <span>{{ output_uesr.menstruation }}</span> <span>{{ output_uesr.loyalty }}</span> <span >{{ output_uesr.identity }}</span>
+                                 <span >{{ output_uesr.tendency }}</span></li>
+                            {% endfor %}
+
+
+
+                        </ul>
+                    </div>
+
+
+                </div>
+                <div class="boxfoot"></div>
+            </div>
+        </li>
+        <li>
+            <div class="boxall" style="height:calc(100% - .25rem); padding: 0;">
+                <div class="tit04">用户消费</div>
+                <div class="boxnav nav04">
+
+                    <div class="listhead listhead2">
+                        <span>用户</span>
+
+                        <span>共计消费金额</span>
+
+                    </div>
+
+                    <div class="listnav listnav2 scrollDiv">
+
+                        <ul class="smjl">
+
+                            {% for id,mount in mount_by_ids.items %}
+                            	<li>
+                                <span>{{ id }}</span>
+
+                                <span>{{ mount |floatformat:2}}</span>
+                            </li>
+                            {% endfor %}
+
+
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="boxfoot"></div>
+            </div>
+
+        </li>
+    </ul>
+</div>
+
+
+<script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+<script src="{% static 'js/jquery.liMarquee.js' %}"></script>
+<script language="JavaScript" src="{% static 'js/js.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.countup.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script type="text/javascript">
+    $('.counter').countUp();
+
+    $(function () {
+        $('.scrollDiv').liMarquee({
+            direction: 'up',//身上滚动
+            runshort: false,//内容不足时不滚动
+            scrollamount: 20//速度
+        });
+    });
+
+</script>
+
+<script src="{% static 'js/countDown.js' %}"></script>
+<script type="text/javascript">
+    $("input[name='countDown']").each(function () {
+        var time_end = this.value;
+        var con = $(this).next("span");
+        var _ = this.dataset;
+        countDown(con, {
+            time_end: time_end//开始时间
+        })
+            //提供3个事件分别为:启动,重启,停止
+            .on("countDownStarted countDownRestarted  countDownEnded ", function (arguments) {
+                console.info(arguments);
+            });
+    });
+
+</script>
+{#<meta http-equiv="refresh" content="5;url='https://blog.csdn.net/qq_31766533/article/details/119274641'">#}
+</body>
+</html>
